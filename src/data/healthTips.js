@@ -1,0 +1,57 @@
+export const healthTips = [
+  {
+    slug: 'prevent-kidney-stones',
+    title: 'How to Prevent Kidney Stones',
+    summary: 'Simple daily habits that dramatically reduce your risk.',
+    tips: [
+      { icon: '✅', text: 'Drink 2.5–3 litres of water daily — dilutes minerals that form stones.' },
+      { icon: '❌', text: 'Reduce salt intake — excess sodium causes calcium to build up in urine.' },
+      { icon: '❌', text: 'Avoid Calcium Oxalate-rich foods like spinach, nuts, and chocolate in excess.' },
+      { icon: '❌', text: 'Cut down on coffee and sweet carbonated drinks.' },
+      { icon: '✅', text: 'Eat citrus fruits — lemon juice provides citrate that prevents stone formation.' },
+      { icon: '⚠️', text: 'Kidney stones are more likely to recur in summer. Stay extra hydrated.' },
+    ],
+    note: 'If you have lower back or abdominal pain, consult a doctor immediately.',
+  },
+  {
+    slug: 'diabetes-awareness',
+    title: 'Diabetes Awareness',
+    summary: 'Know the signs early and take control of your health.',
+    tips: [
+      { icon: '✅', text: 'Test your fasting blood sugar annually if you are above 35 or have a family history.' },
+      { icon: '✅', text: 'Walk 30 minutes a day — it significantly improves insulin sensitivity.' },
+      { icon: '❌', text: 'Avoid sugary drinks, white rice in excess, and refined carbohydrates.' },
+      { icon: '✅', text: 'Eat more fiber: vegetables, legumes, and whole grains slow sugar absorption.' },
+      { icon: '⚠️', text: 'Uncontrolled diabetes damages kidneys, eyes, nerves, and the heart over time.' },
+    ],
+    note: 'Regular HbA1c testing every 3 months is essential for diagnosed diabetics.',
+  },
+  {
+    slug: 'bp-management',
+    title: 'Blood Pressure Management',
+    summary: 'High BP is silent — but manageable with the right habits.',
+    tips: [
+      { icon: '✅', text: 'Reduce salt in your diet — aim for less than 5g per day.' },
+      { icon: '✅', text: 'Exercise regularly: 30 minutes of moderate activity 5 days a week.' },
+      { icon: '❌', text: 'Limit alcohol and quit smoking — both raise blood pressure significantly.' },
+      { icon: '✅', text: 'Manage stress with yoga, deep breathing, or a hobby you enjoy.' },
+      { icon: '✅', text: 'Monitor BP at home regularly and keep a log to show your doctor.' },
+      { icon: '⚠️', text: 'Never stop BP medication on your own — always consult your doctor first.' },
+    ],
+    note: 'High BP rarely has symptoms. Regular checkups can save your life.',
+  },
+  {
+    slug: 'dengue-prevention',
+    title: 'Dengue Prevention',
+    summary: 'Protect yourself and your family during monsoon season.',
+    tips: [
+      { icon: '❌', text: 'Eliminate standing water in coolers, pots, and tyres — Aedes mosquitoes breed there.' },
+      { icon: '✅', text: 'Use mosquito repellent creams and wear full-sleeve clothing outdoors.' },
+      { icon: '✅', text: 'Sleep under a mosquito net, especially for children and elderly.' },
+      { icon: '✅', text: 'Drink papaya leaf juice — helps maintain platelet count during dengue.' },
+      { icon: '✅', text: 'Stay hydrated with ORS, coconut water, and plenty of fluids.' },
+      { icon: '⚠️', text: 'High fever with rash and joint pain? Visit the hospital immediately — do not delay.' },
+    ],
+    note: 'Dengue is most common July–November in Hyderabad. Be extra cautious during this period.',
+  },
+]
