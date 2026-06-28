@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { useEffect } from 'react'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 
 // Layout
 import Navbar from './components/layout/Navbar'
@@ -28,12 +29,20 @@ import Billing from './pages/admin/Billing'
 import NewBill from './pages/admin/NewBill'
 import BillDetail from './pages/admin/BillDetail'
 
+const ScrollToTop = () => {
+  const { pathname } = useLocation()
+  useEffect(() => { window.scrollTo(0, 0) }, [pathname])
+  return null
+}
+
 // Public layout wrapper
 const PublicLayout = ({ children }) => (
   <>
     <Navbar />
     <FloatingActions />
-    <main>{children}</main>
+    <main className="min-h-screen pb-16 lg:pb-0">
+      {children}
+    </main>
     <Footer />
   </>
 )
@@ -41,6 +50,7 @@ const PublicLayout = ({ children }) => (
 const App = () => {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
 
         {/* Public routes */}

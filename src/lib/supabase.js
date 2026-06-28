@@ -10,6 +10,3 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     autoRefreshToken: true,
   },
 })
-
-console.log("URL:", supabaseUrl)
-console.log("KEY:", supabaseAnonKey)

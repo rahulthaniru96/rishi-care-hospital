@@ -1,15 +1,16 @@
 // Badge for status labels like Low Stock, Near Expiry, etc.
 const Badge = ({ children, variant = 'info', className = '' }) => {
   const variants = {
-    info: 'bg-blue-100 text-blue-800',
-    success: 'bg-green-100 text-green-800',
-    warning: 'bg-yellow-100 text-yellow-800',
-    danger: 'bg-red-100 text-red-800',
-    gray: 'bg-gray-100 text-gray-700',
+    info: 'bg-healthcare-100 text-healthcare-900',
+    success: 'bg-success/10 text-success',
+    warning: 'bg-warning/10 text-warning',
+    danger: 'bg-emergency/10 text-emergency',
+    emergency: 'bg-emergency/10 text-emergency',
+    gray: 'bg-slate-100 text-slate-700',
   }
 
   return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${variants[variant]} ${className}`}>
+    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase ${variants[variant]} ${className}`}>
       {children}
     </span>
   )

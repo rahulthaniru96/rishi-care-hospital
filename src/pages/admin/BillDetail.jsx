@@ -2,31 +2,31 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { generateBillPDF } from '../../lib/generatePDF'
-import Sidebar from '../../components/admin/Sidebar'
+import AdminPage from '../../components/admin/AdminPage'
 import Button from '../../components/ui/Button'
 import Spinner from '../../components/ui/Spinner'
 
 const BillDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [bill, setBill] = useState(null)
   const [patient, setPatient] = useState(null)
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => { fetchBill() }, [id])
-
-  const fetchBill = async () => {
-    const [{ data: billData }, { data: itemData }] = await Promise.all([
-      supabase.from('bills').select('*, patients(*)').eq('id', id).single(),
-      supabase.from('bill_items').select('*').eq('bill_id', id),
-    ])
-    setBill(billData)
-    setPatient(billData?.patients)
-    setItems(itemData || [])
-    setLoading(false)
-  }
+  useEffect(() => {
+    const fetchBill = async () => {
+      const [{ data: billData }, { data: itemData }] = await Promise.all([
+        supabase.from('bills').select('*, patients(*)').eq('id', id).single(),
+        supabase.from('bill_items').select('*').eq('bill_id', id),
+      ])
+      setBill(billData)
+      setPatient(billData?.patients)
+      setItems(itemData || [])
+      setLoading(false)
+    }
+    fetchBill()
+  }, [id])
 
   const handlePrint = () => {
     if (bill && patient && items) {
@@ -35,10 +35,9 @@ const BillDetail = () => {
   }
 
   if (loading) return (
-    <div className="flex min-h-screen bg-gray-50">
-      <Sidebar isOpen={false} onClose={() => {}} />
-      <div className="flex-1 flex items-center justify-center"><Spinner size="lg" /></div>
-    </div>
+    <AdminPage title="Loading...">
+      <div className="flex min-h-[420px] items-center justify-center"><Spinner size="lg" /></div>
+    </AdminPage>
   )
 
   if (!bill) return (
@@ -50,24 +49,9 @@ const BillDetail = () => {
   )
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
-      <div className="flex-1 flex flex-col min-w-0">
-        <header className="bg-white border-b border-gray-100 px-4 py-4 flex items-center gap-4 sticky top-0 z-10">
-          <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-gray-500">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-          <button onClick={() => navigate('/admin/billing')} className="text-gray-400 hover:text-gray-600 text-sm">←</button>
-          <h1 className="font-bold text-gray-900 text-lg flex-1">{bill.bill_number}</h1>
-          <Button onClick={handlePrint} variant="success">📄 Download PDF</Button>
-        </header>
-
-        <main className="flex-1 p-4 md:p-6 max-w-3xl mx-auto w-full">
-
-          {/* Bill header info */}
+    <AdminPage title={bill.bill_number} backPath="/admin/billing" backLabel="← Billing" actions={<Button onClick={handlePrint} variant="success">📄 Download PDF</Button>}>
+      <div className="max-w-3xl mx-auto w-full">
+        {/* Bill header info */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-5">
             <div className="grid grid-cols-2 gap-6">
               <div>
@@ -127,11 +111,10 @@ const BillDetail = () => {
               </div>
             </div>
           </div>
-
-        </main>
-      </div>
-    </div>
+        </div>
+      </AdminPage>
   )
+
 }
 
 export default BillDetail

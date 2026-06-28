@@ -28,34 +28,36 @@ const Sidebar = ({ isOpen, onClose }) => {
 
       {/* Sidebar */}
       <aside className={`
-        fixed top-0 left-0 h-full w-64 bg-white border-r border-gray-100 shadow-lg z-30
+        fixed top-0 left-0 h-full w-72 bg-healthcare-900 text-white shadow-2xl z-30
         flex flex-col transition-transform duration-300
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0 lg:static lg:shadow-none
       `}>
         {/* Logo area */}
-        <div className="p-5 border-b border-gray-100">
+        <div className="p-6 border-b border-healthcare-700">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-700 rounded-xl flex items-center justify-center text-white font-bold text-lg">R</div>
+            <div className="!text-[#000080] w-12 h-12 bg-white rounded-lg flex items-center justify-center text-healthcare-900 font-bold text-lg shadow-md">
+              R
+            </div>
             <div>
-              <p className="font-bold text-gray-900 text-sm leading-tight">Rishi Care</p>
-              <p className="text-xs text-gray-400">Hospital Admin</p>
+              <p className="font-bold text-white text-sm leading-tight !text-[#000080]">Rishi Care</p>
+              <p className="text-xs text-healthcare-200 !text-[#000080]">Hospital Admin</p>
             </div>
           </div>
         </div>
 
         {/* Nav items */}
-        <nav className="flex-1 p-4 space-y-1">
+        <nav className="flex-1 p-4 space-y-2">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               onClick={onClose}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors
+                `flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-200 !text-[#000080]
                 ${isActive
-                  ? 'bg-blue-700 text-white'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  ? 'bg-white text-healthcare-900 shadow-lg'
+                  : 'text-healthcare-100 hover:bg-healthcare-800 hover:!text-black'
                 }`
               }
             >
@@ -65,11 +67,10 @@ const Sidebar = ({ isOpen, onClose }) => {
           ))}
         </nav>
 
-        {/* Logout */}
-        <div className="p-4 border-t border-gray-100">
+        <div className="p-4 border-t border-healthcare-700">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+            className="!text-[#000080] hover:!text-black w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold text-emergency hover:bg-emergency/20 transition-all duration-200"
           >
             <span className="text-lg">🚪</span>
             Logout

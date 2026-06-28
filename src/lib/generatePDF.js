@@ -12,7 +12,6 @@ export const generateBillPDF = (bill, patient, items) => {
   // ── COLORS ──
   const blue = [13, 71, 161]
   const darkGray = [31, 41, 55]
-  const lightGray = [243, 244, 246]
   const medGray = [107, 114, 128]
   const red = [185, 28, 28]
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
-import Sidebar from '../../components/admin/Sidebar'
+import AdminPage from '../../components/admin/AdminPage'
 import SearchInput from '../../components/ui/SearchInput'
 import Modal from '../../components/ui/Modal'
 import Button from '../../components/ui/Button'
@@ -13,28 +13,29 @@ const EMPTY_FORM = { name: '', phone: '', age: '', gender: 'Male', doctor_name: 
 
 const Patients = () => {
   const navigate = useNavigate()
-  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [patients, setPatients] = useState([])
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
+  const [refreshKey, setRefreshKey] = useState(0)
   const [modalOpen, setModalOpen] = useState(false)
   const [editPatient, setEditPatient] = useState(null)
   const [form, setForm] = useState(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
-  useEffect(() => { fetchPatients() }, [])
-
-  const fetchPatients = async () => {
-    setLoading(true)
-    const { data } = await supabase
-      .from('patients')
-      .select('*')
-      .eq('is_active', true)
-      .order('created_at', { ascending: false })
-    setPatients(data || [])
-    setLoading(false)
-  }
+  useEffect(() => {
+    const fetchPatients = async () => {
+      setLoading(true)
+      const { data } = await supabase
+        .from('patients')
+        .select('*')
+        .eq('is_active', true)
+        .order('created_at', { ascending: false })
+      setPatients(data || [])
+      setLoading(false)
+    }
+    fetchPatients()
+  }, [refreshKey])
 
   const filtered = patients.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -75,109 +76,118 @@ const Patients = () => {
     }
     setSaving(false)
     setModalOpen(false)
-    fetchPatients()
+    setRefreshKey(k => k + 1)
   }
 
   const handleSoftDelete = async (id) => {
     if (!confirm('Remove this patient? Their history and bills will be preserved.')) return
     await supabase.from('patients').update({ is_active: false }).eq('id', id)
-    fetchPatients()
+    setRefreshKey(k => k + 1)
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+    <>
+      <AdminPage title="Patients" actions={<Button onClick={openAdd}>+ Add Patient</Button>}>
+        <SearchInput value={search} onChange={setSearch} placeholder="Search by name or phone..." className="mb-6 max-w-md" />
 
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Header */}
-        <header className="bg-white border-b border-gray-100 px-4 py-4 flex items-center gap-4 sticky top-0 z-10">
-          <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-gray-500">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-          <h1 className="font-bold text-gray-900 text-lg flex-1">Patients</h1>
-          <Button onClick={openAdd}>+ Add Patient</Button>
-        </header>
-
-        <main className="flex-1 p-4 md:p-6">
-          <SearchInput value={search} onChange={setSearch} placeholder="Search by name or phone..." className="mb-5 max-w-md" />
-
-          {loading ? (
-            <Spinner size="lg" className="mt-20" />
-          ) : filtered.length === 0 ? (
-            <div className="text-center py-16 text-gray-400">
-              <p className="text-4xl mb-3">👥</p>
-              <p>{search ? 'No patients match your search.' : 'No patients yet. Add your first patient!'}</p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {filtered.map(p => (
-                <div key={p.id} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex items-center gap-4">
-                  {/* Avatar */}
-                  <div className="w-11 h-11 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 font-bold text-lg flex-shrink-0">
-                    {p.name.charAt(0).toUpperCase()}
-                  </div>
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-gray-900 truncate">{p.name}</p>
-                    <p className="text-gray-500 text-xs mt-0.5">{p.phone} · {p.age}y · {p.gender}</p>
-                    <p className="text-gray-400 text-xs">{p.doctor_name}</p>
-                  </div>
-                  {/* Actions */}
-                  <div className="flex gap-2 flex-shrink-0">
-                    <Button size="sm" variant="ghost" onClick={() => navigate(`/admin/patients/${p.id}`)}>View</Button>
-                    <Button size="sm" variant="secondary" onClick={() => openEdit(p)}>Edit</Button>
-                    <Button size="sm" variant="danger" onClick={() => handleSoftDelete(p.id)}>Remove</Button>
-                  </div>
+        {loading ? (
+          <Spinner size="lg" className="mt-20" />
+        ) : filtered.length === 0 ? (
+          <div className="text-center py-16 text-slate-400">
+            <p className="text-5xl mb-4">👥</p>
+            <p className="font-medium">{search ? 'No patients match your search.' : 'No patients yet. Add your first patient!'}</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {filtered.map(p => (
+              <div
+                key={p.id}
+                className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-4 group"
+              >
+                {/* Avatar */}
+                <div className="w-11 h-11 bg-healthcare-100 rounded-lg flex items-center justify-center text-healthcare-900 font-bold text-lg flex-shrink-0 group-hover:bg-healthcare-200 transition-colors">
+                  {p.name.charAt(0).toUpperCase()}
                 </div>
-              ))}
-            </div>
-          )}
-        </main>
-      </div>
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-slate-900 truncate group-hover:text-healthcare-900">{p.name}</p>
+                  <p className="text-slate-500 text-xs mt-0.5">{p.phone} · {p.age}y · {p.gender}</p>
+                  <p className="text-slate-400 text-xs truncate">{p.doctor_name}</p>
+                </div>
+                {/* Actions */}
+                <div className="flex gap-2 flex-shrink-0">
+                  <Button size="sm" variant="secondary" onClick={() => navigate(`/admin/patients/${p.id}`)}>View</Button>
+                  <Button size="sm" variant="outline" onClick={() => openEdit(p)}>Edit</Button>
+                  <Button size="sm" variant="danger" onClick={() => handleSoftDelete(p.id)}>Remove</Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </AdminPage>
 
       {/* Add/Edit Modal */}
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editPatient ? 'Edit Patient' : 'Add Patient'}>
         <div className="space-y-4">
-          {error && <p className="text-red-600 text-sm bg-red-50 px-3 py-2 rounded-lg">{error}</p>}
+          {error && <div className="text-emergency text-sm bg-emergency/10 px-3 py-2 rounded-lg border border-emergency/20">{error}</div>}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-            <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Patient full name" />
+            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">Full Name *</label>
+            <input
+              value={form.name}
+              onChange={e => setForm({ ...form, name: e.target.value })}
+              className="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-healthcare-500 focus:border-transparent transition-all"
+              placeholder="Patient full name"
+            />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
-            <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })}
-              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="+91 9XXXXXXXXX" />
+            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">Phone *</label>
+            <input
+              value={form.phone}
+              onChange={e => setForm({ ...form, phone: e.target.value })}
+              className="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-healthcare-500 focus:border-transparent transition-all"
+              placeholder="+91 9XXXXXXXXX"
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Age *</label>
-              <input type="number" value={form.age} onChange={e => setForm({ ...form, age: e.target.value })} min={1} max={149}
-                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Age" />
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">Age *</label>
+              <input
+                type="number"
+                value={form.age}
+                onChange={e => setForm({ ...form, age: e.target.value })}
+                min={1}
+                max={149}
+                className="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-healthcare-500 focus:border-transparent transition-all"
+                placeholder="Age"
+              />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Gender *</label>
-              <select value={form.gender} onChange={e => setForm({ ...form, gender: e.target.value })}
-                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">Gender *</label>
+              <select
+                value={form.gender}
+                onChange={e => setForm({ ...form, gender: e.target.value })}
+                className="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-healthcare-500 focus:border-transparent transition-all"
+              >
                 {GENDERS.map(g => <option key={g}>{g}</option>)}
               </select>
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Assigned Doctor *</label>
-            <select value={form.doctor_name} onChange={e => setForm({ ...form, doctor_name: e.target.value })}
-              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">Assigned Doctor *</label>
+            <select
+              value={form.doctor_name}
+              onChange={e => setForm({ ...form, doctor_name: e.target.value })}
+              className="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-healthcare-500 focus:border-transparent transition-all"
+            >
               {DOCTORS.map(d => <option key={d}>{d}</option>)}
             </select>
           </div>
 
-          <div className="flex gap-3 pt-2">
+          <div className="flex gap-3 pt-4">
             <Button variant="ghost" onClick={() => setModalOpen(false)} className="flex-1">Cancel</Button>
             <Button onClick={handleSave} disabled={saving} className="flex-1">
               {saving ? 'Saving...' : editPatient ? 'Update' : 'Add Patient'}
@@ -185,7 +195,7 @@ const Patients = () => {
           </div>
         </div>
       </Modal>
-    </div>
+    </>
   )
 }
 

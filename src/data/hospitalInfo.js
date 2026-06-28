@@ -3,6 +3,7 @@ export const hospitalInfo = {
   tagline: 'You Are In Safe Hands',
   phone: '+91 9391156294',
   whatsapp: '+919391156294',
+  email: 'rishicarehospital@gmail.com',
   address: '11-9/1/5, Road No.3, Balaji Nagar, Parvathapur, Peerzadiguda, Hyderabad, Telangana 500039',
   addressShort: 'Peerzadiguda, Hyderabad - 500039',
   googleMapsUrl: 'https://share.google/Ls0OK9GvYVZ5jtPzz',

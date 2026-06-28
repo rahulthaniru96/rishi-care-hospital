@@ -1,4 +1,4 @@
-// Loading spinner
+// Loading spinner with healthcare theme
 const Spinner = ({ size = 'md', className = '' }) => {
   const sizes = {
     sm: 'w-4 h-4',
@@ -8,7 +8,7 @@ const Spinner = ({ size = 'md', className = '' }) => {
 
   return (
     <div className={`flex items-center justify-center ${className}`}>
-      <div className={`${sizes[size]} border-4 border-blue-100 border-t-blue-700 rounded-full animate-spin`} />
+      <div className={`${sizes[size]} border-4 border-healthcare-100 border-t-healthcare-900 rounded-full animate-spin`} />
     </div>
   )
 }
