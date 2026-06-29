@@ -40,7 +40,7 @@ const Home = () => {
               Trusted Healthcare Since 2020
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1] tracking-tight mb-6">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold !text-white leading-[1.1] tracking-tight mb-6">
               Your Health,<br />
               <span className="text-emerald-300">Our Purpose</span>
             </h1>

@@ -13,7 +13,7 @@ const Button = ({ children, onClick, variant = 'primary', size = 'md', className
     outline: 'bg-white text-healthcare-900 border-2 border-healthcare-900 hover:bg-healthcare-50 focus-visible:ring-healthcare-500',
     
     // Danger: Red for critical actions
-    danger: 'bg-emergency text-white shadow-md hover:bg-red-700 hover:shadow-lg focus-visible:ring-emergency',
+    danger: 'bg-emergency !text-navy shadow-md hover:bg-red-700 hover:!text-white hover:shadow-lg focus-visible:ring-emergency',
     
     // Success: Green for confirmations
     success: 'bg-success text-white shadow-md hover:bg-green-700 hover:shadow-lg focus-visible:ring-success',
